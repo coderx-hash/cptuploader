@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPT CODING COMMAND CENTER 2025</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.8);
+            --cyan: #06b6d4;
+            --purple: #8b5cf6;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --orange: #f97316;
+            --pink: #ec4899;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 20%);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin: 0;
+            background: linear-gradient(to right, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .status-pill {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--green);
+            color: var(--green);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 10px var(--green); }
+
+        /* PANELS */
+        .panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .panel h3 { margin-top: 0; font-size: 18px; color: var(--cyan); display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+
+        /* INPUT AREA */
+        textarea {
+            width: 100%;
+            height: 250px;
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-main);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+        textarea:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 15px rgba(6, 182, 212, 0.2); }
+
+        /* BUTTONS */
+        .btn-group { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+        
+        button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #475569;
+            color: var(--text-main);
+            padding: 12px 24px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background: linear-gradient(45deg, var(--cyan), #3b82f6); border: none; color: black; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); }
+        .btn-primary:disabled { background: #334155; color: #64748b; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-secondary { border-color: var(--purple); color: var(--purple); }
+        .btn-secondary:hover { background: rgba(139, 92, 246, 0.1); box-shadow: 0 0 15px rgba(139, 92, 246, 0.2); }
+
+        .btn-danger { border-color: var(--red); color: var(--red); width: 100%; justify-content: center; }
+        .btn-danger:hover { background: var(--red); color: white; box-shadow: 0 0 20px var(--red); }
+
+        /* LOGS */
+        .log-container {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: #000;
+            border-radius: 8px;
+            padding: 15px;
+            height: 120px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            color: #666;
+        }
+        .log-entry { margin-bottom: 4px; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .log-success { color: var(--green); }
+        .log-error { color: var(--red); }
+        .log-info { color: var(--cyan); }
+        .log-warn { color: var(--yellow); }
+
+        /* TABLE & PREVIEW */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: 14px; }
+        th { text-align: left; padding: 10px; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        td { background: rgba(255, 255, 255, 0.03); padding: 15px; vertical-align: middle; border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-left: 1px solid rgba(255, 255, 255, 0.05); }
+        td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-right: 1px solid rgba(255, 255, 255, 0.05); }
+
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; border: 1px solid; display: inline-block; min-width: 60px; text-align: center; }
+        
+        /* CPT CATEGORY COLORS */
+        .cat-em { border-color: #94a3b8; color: #e2e8f0; background: rgba(148, 163, 184, 0.1); } /* Evaluation & Management */
+        .cat-anes { border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1); } /* Anesthesia */
+        .cat-surg { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); } /* Surgery */
+        .cat-rad { border-color: #fbbf24; color: #fbbf24; background: rgba(251, 191, 36, 0.1); } /* Radiology */
+        .cat-path { border-color: #a855f7; color: #a855f7; background: rgba(168, 85, 247, 0.1); } /* Path/Lab */
+        .cat-med { border-color: #06b6d4; color: #06b6d4; background: rgba(6, 182, 212, 0.1); } /* Medicine */
+
+        .preview-card { 
+            background: rgba(0,0,0,0.3); 
+            border-left: 3px solid var(--cyan); 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .preview-card.error { border-left-color: var(--red); background: rgba(239, 68, 68, 0.05); }
+        
+        /* NEW: SEARCH & FILTER STYLES */
+        .search-bar {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+        }
+        .search-bar:focus { outline: none; border-color: var(--cyan); }
+
+        .filter-select {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            min-width: 150px;
+        }
+        .filter-select:focus { outline: none; border-color: var(--cyan); }
+
+        .count-box {
+            padding: 10px; 
+            background: rgba(6, 182, 212, 0.1); 
+            border: 1px solid var(--cyan); 
+            border-radius: 6px; 
+            margin-bottom: 15px; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="header">
+        <div>
+            <h1>CPT COMMAND CENTER 2025</h1>
+            <div style="color: var(--text-muted); font-size: 14px; letter-spacing: 1px;">MEDICAL CODING DATABASE SYSTEM v1.0</div>
+        </div>
+        <div class="status-pill">
+            <div class="status-dot"></div>
+            SYSTEM ONLINE
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3><i class='bx bx-terminal'></i> System Activity</h3>
+        <div class="log-container" id="sysLog">
+            <div class="log-entry log-info">> CPT System Initialized...</div>
+            <div class="log-entry">> Duplicate Detection: ACTIVE</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3><i class='bx bx-code-block'></i> Data Ingestion</h3>
+        <textarea id="rawInput" placeholder="Paste your CPT questions here...
+
+Format:
+1. Patient underwent Laparoscopic Cholecystectomy. What is the correct CPT code?
+A. 47562
+B. 47600
+C. 47563
+D. 47564
+Answer: A
+Rationale: 47562 is for Laparoscopic cholecystectomy...
+Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
+
+        <div class="btn-group">
+            <button class="btn-secondary" onclick="processInput()"><i class='bx bx-scan'></i> Scan & Verify</button>
+            <button class="btn-primary" onclick="uploadData()" id="btnUpload" disabled><i class='bx bx-cloud-upload'></i> Upload to Database</button>
+            <button class="btn-secondary" onclick="clearInput()"><i class='bx bx-trash'></i> Clear</button>
+            <button class="btn-secondary" onclick="fetchLive()" style="margin-left:auto"><i class='bx bx-data'></i> View Live Data</button>
+        </div>
+    </div>
+
+    <div class="panel" style="border: 1px solid rgba(239, 68, 68, 0.3);">
+        <h3 style="color: var(--red)"><i class='bx bxs-error'></i> Danger Zone</h3>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+            <p style="color: var(--text-muted); font-size: 13px; margin: 0;">
+                Warning: This action will permanently wipe all questions from the "questions" collection.
+                <br>Requires confirmation code: <b>CONFIRM DELETE</b>
+            </p>
+            <div style="width: 200px;">
+                <button class="btn-danger" onclick="nukeDatabase()"><i class='bx bxs-radiation'></i> NUKE DATABASE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="previewArea" class="panel" style="display:none;">
+        <h3><i class='bx bx-list-check'></i> Scan Results</h3>
+        <div id="previewContent"></div>
+    </div>
+
+    <div id="liveDataArea" class="panel" style="display:none;">
+        <h3><i class='bx bx-server'></i> Live Firestore Data</h3>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input type="text" id="searchInput" class="search-bar" placeholder="Search for question, code or ID..." onkeyup="window.filterData()">
+            <select id="filterCategory" class="filter-select" onchange="window.filterData()">
+                <option value="ALL">All Categories</option>
+                <option value="E/M">Evaluation (E/M)</option>
+                <option value="ANESTHESIA">Anesthesia</option>
+                <option value="SURGERY">Surgery</option>
+                <option value="RADIOLOGY">Radiology</option>
+                <option value="PATH/LAB">Path/Lab</option>
+                <option value="MEDICINE">Medicine</option>
+            </select>
+        </div>
+
+        <div id="liveContent"></div>
+    </div>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, doc, deleteDoc, getDocs, writeBatch, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // --- CONFIG ---
+    // NOTE: Keep your existing config unless you have a new project for CPT
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbwpEKp-vHN2mcAeEm6T_1te9tDK7vOO4",
+      authDomain: "pnlereviewer-f9d1b.firebaseapp.com",
+      projectId: "pnlereviewer-f9d1b",
+      storageBucket: "pnlereviewer-f9d1b.firebasestorage.app",
+      messagingSenderId: "222831488170",
+      appId: "1:222831488170:web:57e17d32f42cbffa3e74d3",
+      measurementId: "G-PLSJ1JSXC3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    let parsedPayload = [];
+    let globalQuestions = []; // Store fetched data here for fast filtering
+
+    // --- LOGGING ---
+    function log(msg, type = 'info') {
+        const consoleEl = document.getElementById('sysLog');
+        const line = document.createElement('div');
+        line.className = 'log-entry';
+        const ts = new Date().toLocaleTimeString('en-US', {hour12:false});
+        
+        if(type === 'success') line.classList.add('log-success');
+        if(type === 'error') line.classList.add('log-error');
+        if(type === 'warn') line.classList.add('log-warn');
+        if(type === 'info') line.classList.add('log-info');
+
+        line.innerText = `[${ts}] > ${msg}`;
+        consoleEl.appendChild(line);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    // --- MEDICAL CODING CATEGORY DETECTION ---
+    function detectCategory(text) {
+        const t = text.toLowerCase();
+        
+        // 1. Check for Explicit Tags
+        const explicit = text.match(/(?:Category|Topic)\s*[:\-]\s*([A-Za-z\/\s]+)/i);
+        if (explicit) {
+            let cat = explicit[1].trim().toUpperCase();
+            // Normalize explicit inputs
+            if(cat.includes("E/M") || cat.includes("EVAL")) return "E/M";
+            if(cat.includes("ANES")) return "ANESTHESIA";
+            if(cat.includes("SURG")) return "SURGERY";
+            if(cat.includes("RAD")) return "RADIOLOGY";
+            if(cat.includes("PATH") || cat.includes("LAB")) return "PATH/LAB";
+            if(cat.includes("MED")) return "MEDICINE";
+            return cat; 
+        }
+
+        // 2. Keyword & Range Detection
+        
+        // ANESTHESIA (00100-01999)
+        if (t.match(/anesthesia|sedation|asa status|00\d{3}/)) return "ANESTHESIA";
+        
+        // EVALUATION & MANAGEMENT (99201-99499)
+        if (t.match(/office visit|consultation|emergency dept|mdm|history|physical exam|99\d{3}/)) return "E/M";
+        
+        // RADIOLOGY (70000-79999)
+        if (t.match(/x-ray|ct scan|mri|ultrasound|nuclear|contrast|radiology|7\d{4}/)) return "RADIOLOGY";
+        
+        // PATHOLOGY & LABORATORY (80000-89398)
+        if (t.match(/panel|assay|blood|pathology|biopsy|culture|smear|8\d{4}/)) return "PATH/LAB";
+        
+        // MEDICINE (90281-99199, 99500-99607)
+        if (t.match(/immunization|vaccine|dialysis|infusion|cardiac cath|psychiatry|9\d{4}/)) return "MEDICINE";
+        
+        // SURGERY (10000-69999) - Default fallback for procedural terms if not others
+        if (t.match(/excision|incision|repair|graft|scope|scopy|tomy|plasty|resection|1\d{4}|2\d{4}|3\d{4}|4\d{4}|5\d{4}|6\d{4}/)) return "SURGERY";
+
+        return "UNCATEGORIZED";
+    }
+
+    // --- PARSING ---
+    window.processInput = () => {
+        const raw = document.getElementById('rawInput').value;
+        if(!raw.trim()) { log("Input buffer is empty.", "error"); return; }
+        
+        log("Scanning for CPT data blocks...");
+        const blocks = raw.split(/\n\s*\n|---/).filter(b => b.trim().length > 10);
+        
+        parsedPayload = blocks.map(block => {
+            const lines = block.split('\n').map(l => l.trim()).filter(l=>l);
+            
+            // STRICT CLEANING
+            let qText = lines[0]
+                .replace(/^\d+[\.\)\-]\s*/, "") 
+                .replace(/\s+/g, " ")            
+                .trim();                        
+
+            let choices = {A:"", B:"", C:"", D:""};
+            let ansKey = "";
+            let rat = "";
+
+            lines.forEach(l => {
+                const clean = l.replace(/[\u200B-\u200D\uFEFF]/g, ''); 
+                if(clean.match(/^(?:Ans|Answer)/i)) { ansKey = clean.split(/[:\-\.]/)[1]?.trim().toUpperCase().charAt(0); }
+                else if(clean.match(/^(?:Rat|Rationale)/i)) { rat = clean.split(/[:\-\.]/)[1]?.trim(); }
+                else if(clean.match(/^[A-D][\.\)\-]/)) {
+                    let letter = clean.charAt(0).toUpperCase();
+                    choices[letter] = clean.substring(2).trim();
+                }
+            });
+
+            // Validation
+            let missing = [];
+            if(!qText) missing.push("Question");
+            if(!choices.A) missing.push("Option A");
+            if(!ansKey) missing.push("Answer");
+            
+            return {
+                question: qText,
+                options: [choices.A, choices.B, choices.C, choices.D],
+                correct: choices[ansKey] || "MISSING_KEY",
+                rationale: rat,
+                category: detectCategory(block),
+                valid: missing.length === 0,
+                missing: missing
+            };
+        });
+
+        renderPreview();
+    };
+
+    function renderPreview() {
+        const container = document.getElementById('previewContent');
+        const area = document.getElementById('previewArea');
+        const uploadBtn = document.getElementById('btnUpload');
+        
+        area.style.display = 'block';
+        document.getElementById('liveDataArea').style.display = 'none';
+        container.innerHTML = "";
+        
+        let validCount = 0;
+
+        parsedPayload.forEach((item, idx) => {
+            if(item.valid) validCount++;
+            
+            // Map categories to CSS classes
+            let badgeClass = "cat-med";
+            if(item.category === "E/M") badgeClass = "cat-em";
+            if(item.category === "ANESTHESIA") badgeClass = "cat-anes";
+            if(item.category === "SURGERY") badgeClass = "cat-surg";
+            if(item.category === "RADIOLOGY") badgeClass = "cat-rad";
+            if(item.category === "PATH/LAB") badgeClass = "cat-path";
+
+            const div = document.createElement('div');
+            div.className = `preview-card ${item.valid ? '' : 'error'}`;
+            div.innerHTML = `
+                <div>
+                    <div style="font-size: 15px; font-weight: 600; color: var(--text-main)">${item.question.substring(0,100)}...</div>
+                    <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">
+                        Answer: <span style="color: var(--cyan)">${item.correct}</span>
+                    </div>
+                    ${!item.valid ? `<div style="color: var(--red); font-size: 12px; margin-top:5px;">MISSING: ${item.missing.join(', ')}</div>` : ''}
+                </div>
+                <div style="text-align: right;">
+                    <span class="badge ${badgeClass}">${item.category}</span>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+
+        if(validCount > 0) {
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = `<i class='bx bx-cloud-upload'></i> Upload (${validCount}) Items`;
+            log(`Scan complete. Found ${validCount} valid questions.`, "success");
+        } else {
+            uploadBtn.disabled = true;
+            log("Scan failed. No valid data structure found.", "error");
+        }
+    }
+
+    // --- UPLOAD ---
+    window.uploadData = async () => {
+        const btn = document.getElementById('btnUpload');
+        const validItems = parsedPayload.filter(i => i.valid);
+        
+        btn.disabled = true;
+        btn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i> Uploading...`;
+        log("Checking for duplicates against database...", "info");
+
+        let success = 0;
+        let fail = 0;
+        let duplicates = 0;
+
+        for(const item of validItems) {
+            try {
+                const q = query(collection(db, "questions"), where("question", "==", item.question));
+                const snap = await getDocs(q);
+
+                if (!snap.empty) {
+                    duplicates++;
+                    log(`Blocked Duplicate: "${item.question.substring(0,25)}..."`, "warn");
+                    continue; 
+                }
+
+                await addDoc(collection(db, "questions"), {
+                    question: item.question,
+                    options: item.options,
+                    correct: item.correct,
+                    rationale: item.rationale,
+                    category: item.category,
+                    timestamp: Date.now()
+                });
+                success++;
+                await new Promise(r => setTimeout(r, 100)); 
+
+            } catch(e) {
+                fail++;
+                console.error(e);
+                log("Upload Error: " + e.message, "error");
+            }
+        }
+
+        log(`Process Done. Uploaded: ${success} | Duplicates Blocked: ${duplicates} | Errors: ${fail}`, success > 0 ? "success" : "warn");
+        
+        btn.innerHTML = `<i class='bx bx-check'></i> Complete`;
+        setTimeout(() => { btn.innerHTML = `<i class='bx bx-cloud-upload'></i> Upload to Database`; }, 3000);
+        window.fetchLive();
+    };
+
+    // --- FETCH & FILTER LOGIC ---
+    window.fetchLive = async () => {
+        document.getElementById('previewArea').style.display = 'none';
+        const area = document.getElementById('liveDataArea');
+        const cont = document.getElementById('liveContent');
+        area.style.display = 'block';
+        cont.innerHTML = `<div style="padding:20px; text-align:center; color: var(--cyan)"><i class='bx bx-loader-alt bx-spin'></i> Retrieving CPT data stream...</div>`;
+        log("Fetching live data...", "info");
+
+        try {
+            const q = query(collection(db, "questions"), orderBy("timestamp", "desc"));
+            const snap = await getDocs(q);
+            
+            if(snap.empty) {
+                cont.innerHTML = "<div style='padding:20px; text-align:center;'>Database is empty.</div>";
+                log("Database is empty.", "info");
+                return;
+            }
+
+            // Save to global variable for filtering
+            globalQuestions = snap.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            log(`Loaded ${globalQuestions.length} records.`, "success");
+            window.filterData(); // Render initial table
+
+        } catch(e) {
+            cont.innerHTML = `<div style="color:var(--red); text-align:center;">Error: ${e.message}</div>`;
+            log("Error fetching data: " + e.message, "error");
+        }
+    };
+
+    // --- FILTER FUNCTION ---
+    window.filterData = () => {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const categoryFilter = document.getElementById('filterCategory').value;
+        const cont = document.getElementById('liveContent');
+
+        // Logic to filter the global array
+        const filtered = globalQuestions.filter(item => {
+            const matchesSearch = item.question.toLowerCase().includes(searchTerm) || item.id.toLowerCase().includes(searchTerm);
+            const matchesCategory = categoryFilter === "ALL" || item.category === categoryFilter;
+            return matchesSearch && matchesCategory;
+        });
+
+        // Render the filtered list
+        let html = `
+            <div class="count-box">
+                <span style="color:var(--text-muted);">SHOWING RECORDS</span>
+                <span style="font-size: 20px; font-weight:bold; color: var(--cyan); text-shadow: 0 0 10px rgba(6,182,212,0.5);">${filtered.length} / ${globalQuestions.length}</span>
+            </div>
+        `;
+
+        if(filtered.length === 0) {
+            html += `<div style="padding:40px; text-align:center; color: var(--text-muted);">No questions found matching your filter.</div>`;
+        } else {
+            html += `<table><tr><th>Category</th><th>Question</th><th>Answer</th><th>Action</th></tr>`;
+            filtered.forEach(data => {
+                // Determine Badge Class
+                let badgeClass = "cat-med";
+                if(data.category === "E/M") badgeClass = "cat-em";
+                if(data.category === "ANESTHESIA") badgeClass = "cat-anes";
+                if(data.category === "SURGERY") badgeClass = "cat-surg";
+                if(data.category === "RADIOLOGY") badgeClass = "cat-rad";
+                if(data.category === "PATH/LAB") badgeClass = "cat-path";
+
+                html += `
+                    <tr id="row-${data.id}">
+                        <td><span class="badge ${badgeClass}">${data.category || 'UNCATEGORIZED'}</span></td>
+                        <td>
+                            <div style="font-weight:600; color:white;">${data.question.substring(0, 80)}...</div>
+                            <div style="font-size:12px; color:var(--text-muted)">ID: ${data.id}</div>
+                        </td>
+                        <td>${data.correct}</td>
+                        <td><button style="padding:5px 10px; font-size:12px; border-color:var(--red); color:var(--red); background:transparent;" onclick="window.delOne('${data.id}')">DELETE</button></td>
+                    </tr>
+                `;
+            });
+            html += "</table>";
+        }
+        
+        cont.innerHTML = html;
+    };
+
+    window.delOne = async (id) => {
+        if(!confirm("Permanently delete this CPT question?")) return;
+        try {
+            await deleteDoc(doc(db, "questions", id));
+            // Remove from local array so we don't need to refetch
+            globalQuestions = globalQuestions.filter(q => q.id !== id);
+            window.filterData(); // Re-render table
+            log(`Deleted record ${id}`, "success");
+        } catch(e) {
+            log("Failed to delete record.", "error");
+        }
+    };
+
+    window.nukeDatabase = async () => {
+        const code = prompt("SECURITY CHECK: Type 'CONFIRM DELETE' to destroy all data.");
+        if(code !== "CONFIRM DELETE") {
+            alert("Incorrect code.");
+            return;
+        }
+
+        log("WARNING: WIPING DATABASE...", "error");
+        const btn = document.querySelector('.btn-danger');
+        btn.disabled = true;
+
+        try {
+            const q = query(collection(db, "questions"));
+            const snap = await getDocs(q);
+            
+            const deletePromises = snap.docs.map(d => deleteDoc(doc(db, "questions", d.id)));
+            await Promise.all(deletePromises);
+
+            globalQuestions = [];
+            log(`DATABASE PURGED.`, "success");
+            alert("Success: Database has been wiped.");
+            window.fetchLive();
+            
+        } catch(e) {
+            log("Error during wipe: " + e.message, "error");
+        } finally {
+            btn.disabled = false;
+        }
+    };
+
+    window.clearInput = () => {
+        document.getElementById('rawInput').value = "";
+        document.getElementById('previewArea').style.display = 'none';
+        log("Input cleared.", "info");
+    };
+
+</script>
+
+</body>
+</html>

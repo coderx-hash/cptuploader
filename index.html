@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPT COMMAND CENTER 2025</title>
+    <title>CPT & ICD10 COMMAND CENTER</title>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -15,6 +15,7 @@
             --green: #10b981;
             --red: #ef4444;
             --yellow: #f59e0b;
+            --orange: #f97316;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
         }
@@ -23,7 +24,7 @@
             background-color: var(--bg-dark);
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 20%);
+                radial-gradient(circle at 90% 80%, rgba(249, 115, 22, 0.08) 0%, transparent 20%);
             color: var(--text-main);
             font-family: 'Rajdhani', sans-serif;
             margin: 0;
@@ -52,7 +53,7 @@
         h1 {
             font-size: 32px;
             margin: 0;
-            background: linear-gradient(to right, var(--cyan), var(--purple));
+            background: linear-gradient(to right, var(--cyan), var(--orange));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
@@ -161,12 +162,17 @@
 
         .badge { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; border: 1px solid; display: inline-block; min-width: 60px; text-align: center; }
         
+        /* CPT Categories */
         .cat-em { border-color: #94a3b8; color: #e2e8f0; background: rgba(148, 163, 184, 0.1); }
         .cat-anes { border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1); }
         .cat-surg { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); }
         .cat-rad { border-color: #fbbf24; color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
         .cat-path { border-color: #a855f7; color: #a855f7; background: rgba(168, 85, 247, 0.1); }
         .cat-med { border-color: #06b6d4; color: #06b6d4; background: rgba(6, 182, 212, 0.1); }
+        
+        /* ICD-10 Category */
+        .cat-icd { border-color: var(--orange); color: var(--orange); background: rgba(249, 115, 22, 0.1); }
+        .cat-unk { border-color: #333; color: #666; background: rgba(0,0,0,0.2); }
 
         .preview-card { 
             background: rgba(0,0,0,0.3); 
@@ -194,8 +200,8 @@
     
     <div class="header">
         <div>
-            <h1>CPT COMMAND CENTER 2025</h1>
-            <div style="color: var(--text-muted); font-size: 14px; letter-spacing: 1px;">MEDICAL CODING DATABASE SYSTEM v1.0</div>
+            <h1>CPT & ICD10 COMMAND CENTER</h1>
+            <div style="color: var(--text-muted); font-size: 14px; letter-spacing: 1px;">MEDICAL CODING DATABASE SYSTEM v2.0</div>
         </div>
         <div class="status-pill">
             <div class="status-dot"></div>
@@ -206,23 +212,23 @@
     <div class="panel">
         <h3><i class='bx bx-terminal'></i> System Activity</h3>
         <div class="log-container" id="sysLog">
-            <div class="log-entry log-info">> CPT System Initialized...</div>
+            <div class="log-entry log-info">> System Initialized... Ready for CPT & ICD-10 Data.</div>
         </div>
     </div>
 
     <div class="panel">
         <h3><i class='bx bx-code-block'></i> Data Ingestion</h3>
-        <textarea id="rawInput" placeholder="Paste your CPT questions here...
+        <textarea id="rawInput" placeholder="Paste your CPT or ICD-10 questions here...
 
-Example Format:
-1. Patient underwent Laparoscopic Cholecystectomy. What is the correct CPT code?
-A. 47562
-B. 47600
-C. 47563
-D. 47564
+Example ICD-10:
+1. Patient has acute appendicitis with generalized peritonitis.
+A. K35.2
+B. K35.80
+C. K35.3
+D. K35.89
 Answer: A
-Rationale: 47562 is for Laparoscopic cholecystectomy...
-Category: SURGERY"></textarea>
+Rationale: K35.2 is for Acute appendicitis with generalized peritonitis...
+Category: ICD10"></textarea>
 
         <div class="btn-group">
             <button class="btn-secondary" onclick="processInput()"><i class='bx bx-scan'></i> Scan & Verify</button>
@@ -253,16 +259,23 @@ Category: SURGERY"></textarea>
     <div id="liveDataArea" class="panel" style="display:none;">
         <h3><i class='bx bx-server'></i> Live Firestore Data</h3>
         
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <input type="text" id="searchInput" class="search-bar" placeholder="Search for question, code or ID..." onkeyup="window.filterData()">
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <input type="text" id="searchInput" class="search-bar" placeholder="Search for question, code (e.g. 99203, I10)..." onkeyup="window.filterData()">
+            
             <select id="filterCategory" class="filter-select" onchange="window.filterData()">
-                <option value="ALL">All Categories</option>
-                <option value="E/M">Evaluation (E/M)</option>
-                <option value="ANESTHESIA">Anesthesia</option>
-                <option value="SURGERY">Surgery</option>
-                <option value="RADIOLOGY">Radiology</option>
-                <option value="PATH/LAB">Path/Lab</option>
-                <option value="MEDICINE">Medicine</option>
+                <option value="ALL">SHOW ALL DATA</option>
+                <optgroup label="Main Categories">
+                    <option value="CPT_ALL">CPT CODES (All Types)</option>
+                    <option value="ICD10">ICD-10 CM (Diagnosis)</option>
+                </optgroup>
+                <optgroup label="Specific CPT Sections">
+                    <option value="CPT-E/M">Evaluation (E/M)</option>
+                    <option value="CPT-ANESTHESIA">Anesthesia</option>
+                    <option value="CPT-SURGERY">Surgery</option>
+                    <option value="CPT-RADIOLOGY">Radiology</option>
+                    <option value="CPT-PATH/LAB">Path/Lab</option>
+                    <option value="CPT-MEDICINE">Medicine</option>
+                </optgroup>
             </select>
         </div>
 
@@ -309,28 +322,46 @@ Category: SURGERY"></textarea>
         consoleEl.scrollTop = consoleEl.scrollHeight;
     }
 
-    // --- DETECT CATEGORY ---
+    // --- SMART CATEGORY DETECTION ---
     function detectCategory(text) {
-        const t = text.toLowerCase();
-        const explicit = text.match(/(?:Category|Topic)\s*[:\-]\s*([A-Za-z\/\s]+)/i);
+        const t = text.toUpperCase();
+        
+        // 1. Explicit Category Check from Text
+        const explicit = text.match(/(?:Category|Topic)\s*[:\-]\s*([A-Za-z0-9\/\s]+)/i);
         if (explicit) {
             let cat = explicit[1].trim().toUpperCase();
-            if(cat.includes("E/M") || cat.includes("EVAL")) return "E/M";
-            if(cat.includes("ANES")) return "ANESTHESIA";
-            if(cat.includes("SURG")) return "SURGERY";
-            if(cat.includes("RAD")) return "RADIOLOGY";
-            if(cat.includes("PATH") || cat.includes("LAB")) return "PATH/LAB";
-            if(cat.includes("MED")) return "MEDICINE";
+            if(cat.includes("ICD")) return "ICD10";
+            if(cat.includes("E/M") || cat.includes("EVAL")) return "CPT-E/M";
+            if(cat.includes("ANES")) return "CPT-ANESTHESIA";
+            if(cat.includes("SURG")) return "CPT-SURGERY";
+            if(cat.includes("RAD")) return "CPT-RADIOLOGY";
+            if(cat.includes("PATH") || cat.includes("LAB")) return "CPT-PATH/LAB";
+            if(cat.includes("MED")) return "CPT-MEDICINE";
             return cat; 
         }
 
-        // Auto-detect based on ranges/keywords
-        if (t.match(/anesthesia|sedation|asa status|00\d{3}/)) return "ANESTHESIA";
-        if (t.match(/office visit|consultation|emergency dept|mdm|history|physical exam|99\d{3}/)) return "E/M";
-        if (t.match(/x-ray|ct scan|mri|ultrasound|nuclear|contrast|radiology|7\d{4}/)) return "RADIOLOGY";
-        if (t.match(/panel|assay|blood|pathology|biopsy|culture|smear|8\d{4}/)) return "PATH/LAB";
-        if (t.match(/immunization|vaccine|dialysis|infusion|cardiac cath|psychiatry|9\d{4}/)) return "MEDICINE";
-        if (t.match(/excision|incision|repair|graft|scope|scopy|tomy|plasty|resection|1\d{4}|2\d{4}|3\d{4}|4\d{4}|5\d{4}|6\d{4}/)) return "SURGERY";
+        // 2. Intelligent Keyword Scanning
+        
+        // CHECK FOR ICD-10 (Codes like A00.0, Z99, etc or keywords)
+        // Regex: Letter followed by 2 digits, optional dot and more digits
+        if (t.match(/[A-Z]\d{2}(?:\.\d{1,4})?/) || t.match(/DIAGNOSIS|ICD-10|CM CODE|SEQUELA/)) {
+            // Need to be careful not to confuse with CPT options A. B. C. D.
+            // Check if context suggests disease/condition vs procedure
+            if(!t.match(/ANESTHESIA|SURGERY|RESECTION|INCISION/)) {
+                return "ICD10";
+            }
+        }
+
+        // CHECK FOR CPT CATEGORIES
+        if (t.match(/ANESTHESIA|SEDATION|ASA STATUS|00\d{3}/)) return "CPT-ANESTHESIA";
+        if (t.match(/OFFICE VISIT|CONSULTATION|EMERGENCY DEPT|MDM|HISTORY|PHYSICAL EXAM|99\d{3}/)) return "CPT-E/M";
+        if (t.match(/X-RAY|CT SCAN|MRI|ULTRASOUND|NUCLEAR|CONTRAST|RADIOLOGY|7\d{4}/)) return "CPT-RADIOLOGY";
+        if (t.match(/PANEL|ASSAY|BLOOD|PATHOLOGY|BIOPSY|CULTURE|SMEAR|8\d{4}/)) return "CPT-PATH/LAB";
+        if (t.match(/IMMUNIZATION|VACCINE|DIALYSIS|INFUSION|CARDIAC CATH|PSYCHIATRY|9\d{4}/)) return "CPT-MEDICINE";
+        
+        // Surgery is a catch-all for many procedures
+        if (t.match(/EXCISION|INCISION|REPAIR|GRAFT|SCOPE|SCOPY|TOMY|PLASTY|RESECTION|1\d{4}|2\d{4}|3\d{4}|4\d{4}|5\d{4}|6\d{4}/)) return "CPT-SURGERY";
+        
         return "UNCATEGORIZED";
     }
 
@@ -340,13 +371,10 @@ Category: SURGERY"></textarea>
         if(!raw.trim()) { log("Input buffer is empty.", "error"); return; }
         
         log("Scanning data blocks...");
-        // More robust splitting
         const blocks = raw.split(/\n\s*\n|---/).filter(b => b.trim().length > 10);
         
         parsedPayload = blocks.map(block => {
             const lines = block.split('\n').map(l => l.trim()).filter(l=>l);
-            
-            // Assume the first line that looks like a question is the question
             let qText = lines[0].replace(/^\d+[\.\)\-]\s*/, "").replace(/\s+/g, " ").trim();                        
 
             let choices = {A:"", B:"", C:"", D:""};
@@ -354,18 +382,14 @@ Category: SURGERY"></textarea>
             let rat = "";
 
             lines.forEach(l => {
-                // Remove invisible chars
                 const clean = l.replace(/[\u200B-\u200D\uFEFF]/g, ''); 
 
-                // Regex for Answer
                 if(clean.match(/^(?:Ans|Answer|ANS)[:\.\-]/i)) { 
                     ansKey = clean.split(/[:\-\.]/)[1]?.trim().toUpperCase().charAt(0); 
                 }
-                // Regex for Rationale
                 else if(clean.match(/^(?:Rat|Rationale)[:\.\-]/i)) { 
                     rat = clean.split(/[:\-\.]/)[1]?.trim(); 
                 }
-                // Regex for Options (A., A), a., etc)
                 else {
                     const optMatch = clean.match(/^([A-D])[.\)\-]\s+(.*)/i);
                     if(optMatch) {
@@ -374,11 +398,6 @@ Category: SURGERY"></textarea>
                     }
                 }
             });
-
-            // Fallback: If lines didn't match regex, maybe they are just lines 1,2,3,4
-            if(!choices.A && lines.length >= 5) {
-                 // Try heuristics if explicit A. B. C. D. are missing
-            }
 
             let missing = [];
             if(!qText) missing.push("Question");
@@ -413,12 +432,15 @@ Category: SURGERY"></textarea>
         parsedPayload.forEach((item, idx) => {
             if(item.valid) validCount++;
             
-            let badgeClass = "cat-med";
-            if(item.category === "E/M") badgeClass = "cat-em";
-            if(item.category === "ANESTHESIA") badgeClass = "cat-anes";
-            if(item.category === "SURGERY") badgeClass = "cat-surg";
-            if(item.category === "RADIOLOGY") badgeClass = "cat-rad";
-            if(item.category === "PATH/LAB") badgeClass = "cat-path";
+            // Assign Badge Classes
+            let badgeClass = "cat-unk";
+            if(item.category === "ICD10") badgeClass = "cat-icd";
+            if(item.category.includes("E/M")) badgeClass = "cat-em";
+            if(item.category.includes("ANESTHESIA")) badgeClass = "cat-anes";
+            if(item.category.includes("SURGERY")) badgeClass = "cat-surg";
+            if(item.category.includes("RADIOLOGY")) badgeClass = "cat-rad";
+            if(item.category.includes("PATH/LAB")) badgeClass = "cat-path";
+            if(item.category.includes("MEDICINE")) badgeClass = "cat-med";
 
             const div = document.createElement('div');
             div.className = `preview-card ${item.valid ? '' : 'error'}`;
@@ -480,7 +502,6 @@ Category: SURGERY"></textarea>
                     timestamp: Date.now()
                 });
                 success++;
-                // Slight delay to prevent rate limiting
                 await new Promise(r => setTimeout(r, 100)); 
 
             } catch(e) {
@@ -503,7 +524,7 @@ Category: SURGERY"></textarea>
         const area = document.getElementById('liveDataArea');
         const cont = document.getElementById('liveContent');
         area.style.display = 'block';
-        cont.innerHTML = `<div style="padding:20px; text-align:center; color: var(--cyan)"><i class='bx bx-loader-alt bx-spin'></i> Retrieving CPT data stream...</div>`;
+        cont.innerHTML = `<div style="padding:20px; text-align:center; color: var(--cyan)"><i class='bx bx-loader-alt bx-spin'></i> Retrieving CPT & ICD10 data stream...</div>`;
         log("Fetching live data...", "info");
 
         try {
@@ -532,12 +553,31 @@ Category: SURGERY"></textarea>
 
     window.filterData = () => {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const categoryFilter = document.getElementById('filterCategory').value;
+        const filter = document.getElementById('filterCategory').value;
         const cont = document.getElementById('liveContent');
 
         const filtered = globalQuestions.filter(item => {
-            const matchesSearch = item.question.toLowerCase().includes(searchTerm) || item.id.toLowerCase().includes(searchTerm);
-            const matchesCategory = categoryFilter === "ALL" || item.category === categoryFilter;
+            const matchesSearch = item.question.toLowerCase().includes(searchTerm) || 
+                                  item.id.toLowerCase().includes(searchTerm) ||
+                                  (item.rationale && item.rationale.toLowerCase().includes(searchTerm));
+            
+            let matchesCategory = true;
+            
+            if (filter === "ALL") {
+                matchesCategory = true;
+            } 
+            else if (filter === "CPT_ALL") {
+                // Show anything that is NOT ICD10 (Assuming everything else is CPT)
+                matchesCategory = item.category.includes("CPT") || (item.category !== "ICD10" && item.category !== "UNCATEGORIZED");
+            }
+            else if (filter === "ICD10") {
+                matchesCategory = item.category === "ICD10";
+            }
+            else {
+                // Exact Match for Sub-categories (e.g. CPT-SURGERY)
+                matchesCategory = item.category === filter;
+            }
+
             return matchesSearch && matchesCategory;
         });
 
@@ -553,12 +593,14 @@ Category: SURGERY"></textarea>
         } else {
             html += `<table><tr><th>Category</th><th>Question</th><th>Answer</th><th>Action</th></tr>`;
             filtered.forEach(data => {
-                let badgeClass = "cat-med";
-                if(data.category === "E/M") badgeClass = "cat-em";
-                if(data.category === "ANESTHESIA") badgeClass = "cat-anes";
-                if(data.category === "SURGERY") badgeClass = "cat-surg";
-                if(data.category === "RADIOLOGY") badgeClass = "cat-rad";
-                if(data.category === "PATH/LAB") badgeClass = "cat-path";
+                let badgeClass = "cat-unk";
+                if(data.category === "ICD10") badgeClass = "cat-icd";
+                else if(data.category.includes("E/M")) badgeClass = "cat-em";
+                else if(data.category.includes("ANESTHESIA")) badgeClass = "cat-anes";
+                else if(data.category.includes("SURGERY")) badgeClass = "cat-surg";
+                else if(data.category.includes("RADIOLOGY")) badgeClass = "cat-rad";
+                else if(data.category.includes("PATH")) badgeClass = "cat-path";
+                else if(data.category.includes("MEDICINE")) badgeClass = "cat-med";
 
                 html += `
                     <tr id="row-${data.id}">
@@ -579,7 +621,7 @@ Category: SURGERY"></textarea>
     };
 
     window.delOne = async (id) => {
-        if(!confirm("Permanently delete this CPT question?")) return;
+        if(!confirm("Permanently delete this question?")) return;
         try {
             await deleteDoc(doc(db, "questions", id));
             globalQuestions = globalQuestions.filter(q => q.id !== id);

@@ -15,8 +15,6 @@
             --green: #10b981;
             --red: #ef4444;
             --yellow: #f59e0b;
-            --orange: #f97316;
-            --pink: #ec4899;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
         }
@@ -163,13 +161,12 @@
 
         .badge { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; border: 1px solid; display: inline-block; min-width: 60px; text-align: center; }
         
-        /* CPT CATEGORY COLORS */
-        .cat-em { border-color: #94a3b8; color: #e2e8f0; background: rgba(148, 163, 184, 0.1); } /* Evaluation & Management */
-        .cat-anes { border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1); } /* Anesthesia */
-        .cat-surg { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); } /* Surgery */
-        .cat-rad { border-color: #fbbf24; color: #fbbf24; background: rgba(251, 191, 36, 0.1); } /* Radiology */
-        .cat-path { border-color: #a855f7; color: #a855f7; background: rgba(168, 85, 247, 0.1); } /* Path/Lab */
-        .cat-med { border-color: #06b6d4; color: #06b6d4; background: rgba(6, 182, 212, 0.1); } /* Medicine */
+        .cat-em { border-color: #94a3b8; color: #e2e8f0; background: rgba(148, 163, 184, 0.1); }
+        .cat-anes { border-color: #f472b6; color: #f472b6; background: rgba(244, 114, 182, 0.1); }
+        .cat-surg { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .cat-rad { border-color: #fbbf24; color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+        .cat-path { border-color: #a855f7; color: #a855f7; background: rgba(168, 85, 247, 0.1); }
+        .cat-med { border-color: #06b6d4; color: #06b6d4; background: rgba(6, 182, 212, 0.1); }
 
         .preview-card { 
             background: rgba(0,0,0,0.3); 
@@ -183,42 +180,12 @@
         }
         .preview-card.error { border-left-color: var(--red); background: rgba(239, 68, 68, 0.05); }
         
-        /* NEW: SEARCH & FILTER STYLES */
-        .search-bar {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid #334155;
-            color: white;
-            padding: 12px;
-            border-radius: 6px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-        }
+        /* SEARCH & FILTER */
+        .search-bar { width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: white; padding: 12px; border-radius: 6px; font-family: 'Rajdhani', sans-serif; font-size: 16px; }
         .search-bar:focus { outline: none; border-color: var(--cyan); }
-
-        .filter-select {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid #334155;
-            color: white;
-            padding: 12px;
-            border-radius: 6px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            cursor: pointer;
-            min-width: 150px;
-        }
+        .filter-select { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: white; padding: 12px; border-radius: 6px; font-family: 'Rajdhani', sans-serif; font-size: 16px; cursor: pointer; min-width: 150px; }
         .filter-select:focus { outline: none; border-color: var(--cyan); }
-
-        .count-box {
-            padding: 10px; 
-            background: rgba(6, 182, 212, 0.1); 
-            border: 1px solid var(--cyan); 
-            border-radius: 6px; 
-            margin-bottom: 15px; 
-            display: flex; 
-            justify-content: space-between;
-            align-items: center;
-        }
+        .count-box { padding: 10px; background: rgba(6, 182, 212, 0.1); border: 1px solid var(--cyan); border-radius: 6px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
@@ -240,7 +207,6 @@
         <h3><i class='bx bx-terminal'></i> System Activity</h3>
         <div class="log-container" id="sysLog">
             <div class="log-entry log-info">> CPT System Initialized...</div>
-            <div class="log-entry">> Duplicate Detection: ACTIVE</div>
         </div>
     </div>
 
@@ -248,7 +214,7 @@
         <h3><i class='bx bx-code-block'></i> Data Ingestion</h3>
         <textarea id="rawInput" placeholder="Paste your CPT questions here...
 
-Format:
+Example Format:
 1. Patient underwent Laparoscopic Cholecystectomy. What is the correct CPT code?
 A. 47562
 B. 47600
@@ -256,7 +222,7 @@ C. 47563
 D. 47564
 Answer: A
 Rationale: 47562 is for Laparoscopic cholecystectomy...
-Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
+Category: SURGERY"></textarea>
 
         <div class="btn-group">
             <button class="btn-secondary" onclick="processInput()"><i class='bx bx-scan'></i> Scan & Verify</button>
@@ -307,10 +273,9 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-    import { getFirestore, collection, addDoc, doc, deleteDoc, getDocs, writeBatch, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, deleteDoc, getDocs, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- CONFIG ---
+    // --- YOUR CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyATtM1JORvtXoeCwQScZMKtCgT75Twu1qg",
       authDomain: "cptreviewer-d844d.firebaseapp.com",
@@ -322,11 +287,10 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getFirestore(app);
     
     let parsedPayload = [];
-    let globalQuestions = []; // Store fetched data here for fast filtering
+    let globalQuestions = [];
 
     // --- LOGGING ---
     function log(msg, type = 'info') {
@@ -345,15 +309,12 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
         consoleEl.scrollTop = consoleEl.scrollHeight;
     }
 
-    // --- MEDICAL CODING CATEGORY DETECTION ---
+    // --- DETECT CATEGORY ---
     function detectCategory(text) {
         const t = text.toLowerCase();
-        
-        // 1. Check for Explicit Tags
         const explicit = text.match(/(?:Category|Topic)\s*[:\-]\s*([A-Za-z\/\s]+)/i);
         if (explicit) {
             let cat = explicit[1].trim().toUpperCase();
-            // Normalize explicit inputs
             if(cat.includes("E/M") || cat.includes("EVAL")) return "E/M";
             if(cat.includes("ANES")) return "ANESTHESIA";
             if(cat.includes("SURG")) return "SURGERY";
@@ -363,26 +324,13 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
             return cat; 
         }
 
-        // 2. Keyword & Range Detection
-        
-        // ANESTHESIA (00100-01999)
+        // Auto-detect based on ranges/keywords
         if (t.match(/anesthesia|sedation|asa status|00\d{3}/)) return "ANESTHESIA";
-        
-        // EVALUATION & MANAGEMENT (99201-99499)
         if (t.match(/office visit|consultation|emergency dept|mdm|history|physical exam|99\d{3}/)) return "E/M";
-        
-        // RADIOLOGY (70000-79999)
         if (t.match(/x-ray|ct scan|mri|ultrasound|nuclear|contrast|radiology|7\d{4}/)) return "RADIOLOGY";
-        
-        // PATHOLOGY & LABORATORY (80000-89398)
         if (t.match(/panel|assay|blood|pathology|biopsy|culture|smear|8\d{4}/)) return "PATH/LAB";
-        
-        // MEDICINE (90281-99199, 99500-99607)
         if (t.match(/immunization|vaccine|dialysis|infusion|cardiac cath|psychiatry|9\d{4}/)) return "MEDICINE";
-        
-        // SURGERY (10000-69999) - Default fallback for procedural terms if not others
         if (t.match(/excision|incision|repair|graft|scope|scopy|tomy|plasty|resection|1\d{4}|2\d{4}|3\d{4}|4\d{4}|5\d{4}|6\d{4}/)) return "SURGERY";
-
         return "UNCATEGORIZED";
     }
 
@@ -391,33 +339,47 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
         const raw = document.getElementById('rawInput').value;
         if(!raw.trim()) { log("Input buffer is empty.", "error"); return; }
         
-        log("Scanning for CPT data blocks...");
+        log("Scanning data blocks...");
+        // More robust splitting
         const blocks = raw.split(/\n\s*\n|---/).filter(b => b.trim().length > 10);
         
         parsedPayload = blocks.map(block => {
             const lines = block.split('\n').map(l => l.trim()).filter(l=>l);
             
-            // STRICT CLEANING
-            let qText = lines[0]
-                .replace(/^\d+[\.\)\-]\s*/, "") 
-                .replace(/\s+/g, " ")            
-                .trim();                        
+            // Assume the first line that looks like a question is the question
+            let qText = lines[0].replace(/^\d+[\.\)\-]\s*/, "").replace(/\s+/g, " ").trim();                        
 
             let choices = {A:"", B:"", C:"", D:""};
             let ansKey = "";
             let rat = "";
 
             lines.forEach(l => {
+                // Remove invisible chars
                 const clean = l.replace(/[\u200B-\u200D\uFEFF]/g, ''); 
-                if(clean.match(/^(?:Ans|Answer)/i)) { ansKey = clean.split(/[:\-\.]/)[1]?.trim().toUpperCase().charAt(0); }
-                else if(clean.match(/^(?:Rat|Rationale)/i)) { rat = clean.split(/[:\-\.]/)[1]?.trim(); }
-                else if(clean.match(/^[A-D][\.\)\-]/)) {
-                    let letter = clean.charAt(0).toUpperCase();
-                    choices[letter] = clean.substring(2).trim();
+
+                // Regex for Answer
+                if(clean.match(/^(?:Ans|Answer|ANS)[:\.\-]/i)) { 
+                    ansKey = clean.split(/[:\-\.]/)[1]?.trim().toUpperCase().charAt(0); 
+                }
+                // Regex for Rationale
+                else if(clean.match(/^(?:Rat|Rationale)[:\.\-]/i)) { 
+                    rat = clean.split(/[:\-\.]/)[1]?.trim(); 
+                }
+                // Regex for Options (A., A), a., etc)
+                else {
+                    const optMatch = clean.match(/^([A-D])[.\)\-]\s+(.*)/i);
+                    if(optMatch) {
+                        let letter = optMatch[1].toUpperCase();
+                        choices[letter] = optMatch[2].trim();
+                    }
                 }
             });
 
-            // Validation
+            // Fallback: If lines didn't match regex, maybe they are just lines 1,2,3,4
+            if(!choices.A && lines.length >= 5) {
+                 // Try heuristics if explicit A. B. C. D. are missing
+            }
+
             let missing = [];
             if(!qText) missing.push("Question");
             if(!choices.A) missing.push("Option A");
@@ -451,7 +413,6 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
         parsedPayload.forEach((item, idx) => {
             if(item.valid) validCount++;
             
-            // Map categories to CSS classes
             let badgeClass = "cat-med";
             if(item.category === "E/M") badgeClass = "cat-em";
             if(item.category === "ANESTHESIA") badgeClass = "cat-anes";
@@ -519,6 +480,7 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
                     timestamp: Date.now()
                 });
                 success++;
+                // Slight delay to prevent rate limiting
                 await new Promise(r => setTimeout(r, 100)); 
 
             } catch(e) {
@@ -554,14 +516,13 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
                 return;
             }
 
-            // Save to global variable for filtering
             globalQuestions = snap.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
 
             log(`Loaded ${globalQuestions.length} records.`, "success");
-            window.filterData(); // Render initial table
+            window.filterData(); 
 
         } catch(e) {
             cont.innerHTML = `<div style="color:var(--red); text-align:center;">Error: ${e.message}</div>`;
@@ -569,20 +530,17 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
         }
     };
 
-    // --- FILTER FUNCTION ---
     window.filterData = () => {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const categoryFilter = document.getElementById('filterCategory').value;
         const cont = document.getElementById('liveContent');
 
-        // Logic to filter the global array
         const filtered = globalQuestions.filter(item => {
             const matchesSearch = item.question.toLowerCase().includes(searchTerm) || item.id.toLowerCase().includes(searchTerm);
             const matchesCategory = categoryFilter === "ALL" || item.category === categoryFilter;
             return matchesSearch && matchesCategory;
         });
 
-        // Render the filtered list
         let html = `
             <div class="count-box">
                 <span style="color:var(--text-muted);">SHOWING RECORDS</span>
@@ -595,7 +553,6 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
         } else {
             html += `<table><tr><th>Category</th><th>Question</th><th>Answer</th><th>Action</th></tr>`;
             filtered.forEach(data => {
-                // Determine Badge Class
                 let badgeClass = "cat-med";
                 if(data.category === "E/M") badgeClass = "cat-em";
                 if(data.category === "ANESTHESIA") badgeClass = "cat-anes";
@@ -625,9 +582,8 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
         if(!confirm("Permanently delete this CPT question?")) return;
         try {
             await deleteDoc(doc(db, "questions", id));
-            // Remove from local array so we don't need to refetch
             globalQuestions = globalQuestions.filter(q => q.id !== id);
-            window.filterData(); // Re-render table
+            window.filterData(); 
             log(`Deleted record ${id}`, "success");
         } catch(e) {
             log("Failed to delete record.", "error");

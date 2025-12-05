@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPT CODING COMMAND CENTER 2025</title>
+    <title>CPT COMMAND CENTER 2025</title>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -307,21 +307,22 @@ Category: SURGERY (Leave blank to Auto-Detect)"></textarea>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
     import { getFirestore, collection, addDoc, doc, deleteDoc, getDocs, writeBatch, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     // --- CONFIG ---
-    // NOTE: Keep your existing config unless you have a new project for CPT
     const firebaseConfig = {
-      apiKey: "AIzaSyBbwpEKp-vHN2mcAeEm6T_1te9tDK7vOO4",
-      authDomain: "pnlereviewer-f9d1b.firebaseapp.com",
-      projectId: "pnlereviewer-f9d1b",
-      storageBucket: "pnlereviewer-f9d1b.firebasestorage.app",
-      messagingSenderId: "222831488170",
-      appId: "1:222831488170:web:57e17d32f42cbffa3e74d3",
-      measurementId: "G-PLSJ1JSXC3"
+      apiKey: "AIzaSyATtM1JORvtXoeCwQScZMKtCgT75Twu1qg",
+      authDomain: "cptreviewer-d844d.firebaseapp.com",
+      projectId: "cptreviewer-d844d",
+      storageBucket: "cptreviewer-d844d.firebasestorage.app",
+      messagingSenderId: "920351741218",
+      appId: "1:920351741218:web:efcef276f002769415c17b",
+      measurementId: "G-GMP4LDJ5EE"
     };
 
     const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
     const db = getFirestore(app);
     
     let parsedPayload = [];

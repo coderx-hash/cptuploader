@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPT & ICD10 COMMAND CENTER</title>
+    <title>CPT, ICD10 & HCPCS COMMAND CENTER</title>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -16,6 +16,7 @@
             --red: #ef4444;
             --yellow: #f59e0b;
             --orange: #f97316;
+            --pink: #ec4899; /* New for HCPCS */
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
         }
@@ -53,7 +54,7 @@
         h1 {
             font-size: 32px;
             margin: 0;
-            background: linear-gradient(to right, var(--cyan), var(--orange));
+            background: linear-gradient(to right, var(--cyan), var(--pink));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
@@ -170,8 +171,9 @@
         .cat-path { border-color: #a855f7; color: #a855f7; background: rgba(168, 85, 247, 0.1); }
         .cat-med { border-color: #06b6d4; color: #06b6d4; background: rgba(6, 182, 212, 0.1); }
         
-        /* ICD-10 Category */
+        /* ICD-10 & HCPCS */
         .cat-icd { border-color: var(--orange); color: var(--orange); background: rgba(249, 115, 22, 0.1); }
+        .cat-hcpcs { border-color: var(--pink); color: var(--pink); background: rgba(236, 72, 153, 0.1); }
         .cat-unk { border-color: #333; color: #666; background: rgba(0,0,0,0.2); }
 
         .preview-card { 
@@ -200,8 +202,8 @@
     
     <div class="header">
         <div>
-            <h1>CPT & ICD10 COMMAND CENTER</h1>
-            <div style="color: var(--text-muted); font-size: 14px; letter-spacing: 1px;">MEDICAL CODING DATABASE SYSTEM v2.1</div>
+            <h1>CPT & ICD10 & HCPCS CENTER</h1>
+            <div style="color: var(--text-muted); font-size: 14px; letter-spacing: 1px;">MEDICAL CODING DATABASE SYSTEM v2.2</div>
         </div>
         <div class="status-pill">
             <div class="status-dot"></div>
@@ -212,23 +214,23 @@
     <div class="panel">
         <h3><i class='bx bx-terminal'></i> System Activity</h3>
         <div class="log-container" id="sysLog">
-            <div class="log-entry log-info">> System Initialized... Ready for CPT & ICD-10 Data.</div>
+            <div class="log-entry log-info">> System Initialized... Ready for CPT, ICD-10 & HCPCS Data.</div>
         </div>
     </div>
 
     <div class="panel">
         <h3><i class='bx bx-code-block'></i> Data Ingestion</h3>
-        <textarea id="rawInput" placeholder="Paste your CPT or ICD-10 questions here...
+        <textarea id="rawInput" placeholder="Paste your questions here...
 
-Example ICD-10:
-1. Patient has acute appendicitis with generalized peritonitis.
-A. K35.2
-B. K35.80
-C. K35.3
-D. K35.89
-Answer: A
-Rationale: K35.2 is for Acute appendicitis with generalized peritonitis...
-Category: ICD10"></textarea>
+Example HCPCS:
+1. Which HCPCS code represents a standard wheelchair?
+A. E0100
+B. E1130
+C. K0001
+D. J3301
+Answer: C
+Rationale: K0001 describes a standard wheelchair...
+Category: HCPCS"></textarea>
 
         <div class="btn-group">
             <button class="btn-secondary" onclick="processInput()"><i class='bx bx-scan'></i> Scan & Verify</button>
@@ -260,13 +262,14 @@ Category: ICD10"></textarea>
         <h3><i class='bx bx-server'></i> Live Firestore Data</h3>
         
         <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-            <input type="text" id="searchInput" class="search-bar" placeholder="Search for question, code (e.g. 99203, I10)..." onkeyup="window.filterData()">
+            <input type="text" id="searchInput" class="search-bar" placeholder="Search for question, code (e.g. E0100, K35.2)..." onkeyup="window.filterData()">
             
             <select id="filterCategory" class="filter-select" onchange="window.filterData()">
                 <option value="ALL">SHOW ALL DATA</option>
                 <optgroup label="Main Categories">
                     <option value="CPT_ALL">CPT CODES (All Types)</option>
                     <option value="ICD10">ICD-10 CM (Diagnosis)</option>
+                    <option value="HCPCS">HCPCS Level II (Supplies)</option>
                 </optgroup>
                 <optgroup label="Specific CPT Sections">
                     <option value="CPT-E/M">Evaluation (E/M)</option>
@@ -322,7 +325,7 @@ Category: ICD10"></textarea>
         consoleEl.scrollTop = consoleEl.scrollHeight;
     }
 
-    // --- SMART CATEGORY DETECTION ---
+    // --- SMART CATEGORY DETECTION (UPDATED) ---
     function detectCategory(text) {
         const t = text.toUpperCase();
         
@@ -331,6 +334,7 @@ Category: ICD10"></textarea>
         if (explicit) {
             let cat = explicit[1].trim().toUpperCase();
             if(cat.includes("ICD")) return "ICD10";
+            if(cat.includes("HCPCS")) return "HCPCS"; // Explicit HCPCS
             if(cat.includes("E/M") || cat.includes("EVAL")) return "CPT-E/M";
             if(cat.includes("ANES")) return "CPT-ANESTHESIA";
             if(cat.includes("SURG")) return "CPT-SURGERY";
@@ -341,6 +345,20 @@ Category: ICD10"></textarea>
         }
 
         // 2. Intelligent Keyword Scanning
+        
+        // CHECK FOR HCPCS Level II (Letter A-V + 4 Digits, usually NO DOT)
+        // Common Starts: E(DME), J(Drugs), G(Procedures), A(Ambulance/Supplies)
+        // We separate this from ICD10 which usually has dots.
+        if (t.match(/\b[A-V]\d{4}\b/) && !t.includes(".")) {
+             return "HCPCS";
+        }
+        if (t.match(/HCPCS|DME|AMBULANCE|ORTHOTIC|PROSTHETIC|DRUG|INJECTION|SUPPLY/)) {
+            // Context confirmation
+            if(t.match(/[A-V]\d{4}/)) return "HCPCS";
+        }
+
+        // CHECK FOR ICD-10 (Codes like A00.0, Z99, etc or keywords)
+        // Regex: Letter followed by 2 digits, optional dot
         if (t.match(/[A-Z]\d{2}(?:\.\d{1,4})?/) || t.match(/DIAGNOSIS|ICD-10|CM CODE|SEQUELA/)) {
             if(!t.match(/ANESTHESIA|SURGERY|RESECTION|INCISION/)) {
                 return "ICD10";
@@ -360,7 +378,7 @@ Category: ICD10"></textarea>
         return "UNCATEGORIZED";
     }
 
-    // --- PARSING (FIXED HERE) ---
+    // --- PARSING ---
     window.processInput = () => {
         const raw = document.getElementById('rawInput').value;
         if(!raw.trim()) { log("Input buffer is empty.", "error"); return; }
@@ -379,13 +397,10 @@ Category: ICD10"></textarea>
             lines.forEach(l => {
                 const clean = l.replace(/[\u200B-\u200D\uFEFF]/g, ''); 
 
-                // FIX: Use REPLACE instead of SPLIT to avoid cutting text at dots (.)
                 if(clean.match(/^(?:Ans|Answer|ANS)[:\.\-]/i)) { 
-                    // Remove label, take first char
                     ansKey = clean.replace(/^(?:Ans|Answer|ANS)[:\.\-]\s*/i, "").trim().toUpperCase().charAt(0);
                 }
                 else if(clean.match(/^(?:Rat|Rationale)[:\.\-]/i)) { 
-                    // FIX: Remove label, keep everything else (including dots in codes like K35.2)
                     rat = clean.replace(/^(?:Rat|Rationale)[:\.\-]\s*/i, "").trim();
                 }
                 else {
@@ -432,6 +447,7 @@ Category: ICD10"></textarea>
             
             let badgeClass = "cat-unk";
             if(item.category === "ICD10") badgeClass = "cat-icd";
+            if(item.category === "HCPCS") badgeClass = "cat-hcpcs"; // NEW
             if(item.category.includes("E/M")) badgeClass = "cat-em";
             if(item.category.includes("ANESTHESIA")) badgeClass = "cat-anes";
             if(item.category.includes("SURGERY")) badgeClass = "cat-surg";
@@ -448,7 +464,6 @@ Category: ICD10"></textarea>
                         Answer: <span style="color: var(--cyan)">${item.correct}</span>
                     </div>
                     ${item.rationale ? `<div style="font-size: 12px; color: #94a3b8; font-style:italic; margin-top:3px;">Rat: ${item.rationale.substring(0,80)}...</div>` : ''}
-
                     ${!item.valid ? `<div style="color: var(--red); font-size: 12px; margin-top:5px;">MISSING: ${item.missing.join(', ')}</div>` : ''}
                 </div>
                 <div style="text-align: right;">
@@ -523,7 +538,7 @@ Category: ICD10"></textarea>
         const area = document.getElementById('liveDataArea');
         const cont = document.getElementById('liveContent');
         area.style.display = 'block';
-        cont.innerHTML = `<div style="padding:20px; text-align:center; color: var(--cyan)"><i class='bx bx-loader-alt bx-spin'></i> Retrieving CPT & ICD10 data stream...</div>`;
+        cont.innerHTML = `<div style="padding:20px; text-align:center; color: var(--cyan)"><i class='bx bx-loader-alt bx-spin'></i> Retrieving CPT, ICD10 & HCPCS data stream...</div>`;
         log("Fetching live data...", "info");
 
         try {
@@ -566,10 +581,13 @@ Category: ICD10"></textarea>
                 matchesCategory = true;
             } 
             else if (filter === "CPT_ALL") {
-                matchesCategory = item.category.includes("CPT") || (item.category !== "ICD10" && item.category !== "UNCATEGORIZED");
+                matchesCategory = item.category.includes("CPT") || (item.category !== "ICD10" && item.category !== "HCPCS" && item.category !== "UNCATEGORIZED");
             }
             else if (filter === "ICD10") {
                 matchesCategory = item.category === "ICD10";
+            }
+            else if (filter === "HCPCS") { // NEW FILTER
+                matchesCategory = item.category === "HCPCS";
             }
             else {
                 matchesCategory = item.category === filter;
@@ -592,6 +610,7 @@ Category: ICD10"></textarea>
             filtered.forEach(data => {
                 let badgeClass = "cat-unk";
                 if(data.category === "ICD10") badgeClass = "cat-icd";
+                else if(data.category === "HCPCS") badgeClass = "cat-hcpcs"; // NEW BADGE
                 else if(data.category.includes("E/M")) badgeClass = "cat-em";
                 else if(data.category.includes("ANESTHESIA")) badgeClass = "cat-anes";
                 else if(data.category.includes("SURGERY")) badgeClass = "cat-surg";

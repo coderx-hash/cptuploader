@@ -201,7 +201,7 @@
     <div class="header">
         <div>
             <h1>CPT & ICD10 COMMAND CENTER</h1>
-            <div style="color: var(--text-muted); font-size: 14px; letter-spacing: 1px;">MEDICAL CODING DATABASE SYSTEM v2.0</div>
+            <div style="color: var(--text-muted); font-size: 14px; letter-spacing: 1px;">MEDICAL CODING DATABASE SYSTEM v2.1</div>
         </div>
         <div class="status-pill">
             <div class="status-dot"></div>
@@ -341,12 +341,7 @@ Category: ICD10"></textarea>
         }
 
         // 2. Intelligent Keyword Scanning
-        
-        // CHECK FOR ICD-10 (Codes like A00.0, Z99, etc or keywords)
-        // Regex: Letter followed by 2 digits, optional dot and more digits
         if (t.match(/[A-Z]\d{2}(?:\.\d{1,4})?/) || t.match(/DIAGNOSIS|ICD-10|CM CODE|SEQUELA/)) {
-            // Need to be careful not to confuse with CPT options A. B. C. D.
-            // Check if context suggests disease/condition vs procedure
             if(!t.match(/ANESTHESIA|SURGERY|RESECTION|INCISION/)) {
                 return "ICD10";
             }
@@ -359,13 +354,13 @@ Category: ICD10"></textarea>
         if (t.match(/PANEL|ASSAY|BLOOD|PATHOLOGY|BIOPSY|CULTURE|SMEAR|8\d{4}/)) return "CPT-PATH/LAB";
         if (t.match(/IMMUNIZATION|VACCINE|DIALYSIS|INFUSION|CARDIAC CATH|PSYCHIATRY|9\d{4}/)) return "CPT-MEDICINE";
         
-        // Surgery is a catch-all for many procedures
+        // Surgery is a catch-all
         if (t.match(/EXCISION|INCISION|REPAIR|GRAFT|SCOPE|SCOPY|TOMY|PLASTY|RESECTION|1\d{4}|2\d{4}|3\d{4}|4\d{4}|5\d{4}|6\d{4}/)) return "CPT-SURGERY";
         
         return "UNCATEGORIZED";
     }
 
-    // --- PARSING ---
+    // --- PARSING (FIXED HERE) ---
     window.processInput = () => {
         const raw = document.getElementById('rawInput').value;
         if(!raw.trim()) { log("Input buffer is empty.", "error"); return; }
@@ -384,11 +379,14 @@ Category: ICD10"></textarea>
             lines.forEach(l => {
                 const clean = l.replace(/[\u200B-\u200D\uFEFF]/g, ''); 
 
+                // FIX: Use REPLACE instead of SPLIT to avoid cutting text at dots (.)
                 if(clean.match(/^(?:Ans|Answer|ANS)[:\.\-]/i)) { 
-                    ansKey = clean.split(/[:\-\.]/)[1]?.trim().toUpperCase().charAt(0); 
+                    // Remove label, take first char
+                    ansKey = clean.replace(/^(?:Ans|Answer|ANS)[:\.\-]\s*/i, "").trim().toUpperCase().charAt(0);
                 }
                 else if(clean.match(/^(?:Rat|Rationale)[:\.\-]/i)) { 
-                    rat = clean.split(/[:\-\.]/)[1]?.trim(); 
+                    // FIX: Remove label, keep everything else (including dots in codes like K35.2)
+                    rat = clean.replace(/^(?:Rat|Rationale)[:\.\-]\s*/i, "").trim();
                 }
                 else {
                     const optMatch = clean.match(/^([A-D])[.\)\-]\s+(.*)/i);
@@ -432,7 +430,6 @@ Category: ICD10"></textarea>
         parsedPayload.forEach((item, idx) => {
             if(item.valid) validCount++;
             
-            // Assign Badge Classes
             let badgeClass = "cat-unk";
             if(item.category === "ICD10") badgeClass = "cat-icd";
             if(item.category.includes("E/M")) badgeClass = "cat-em";
@@ -450,6 +447,8 @@ Category: ICD10"></textarea>
                     <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">
                         Answer: <span style="color: var(--cyan)">${item.correct}</span>
                     </div>
+                    ${item.rationale ? `<div style="font-size: 12px; color: #94a3b8; font-style:italic; margin-top:3px;">Rat: ${item.rationale.substring(0,80)}...</div>` : ''}
+
                     ${!item.valid ? `<div style="color: var(--red); font-size: 12px; margin-top:5px;">MISSING: ${item.missing.join(', ')}</div>` : ''}
                 </div>
                 <div style="text-align: right;">
@@ -567,14 +566,12 @@ Category: ICD10"></textarea>
                 matchesCategory = true;
             } 
             else if (filter === "CPT_ALL") {
-                // Show anything that is NOT ICD10 (Assuming everything else is CPT)
                 matchesCategory = item.category.includes("CPT") || (item.category !== "ICD10" && item.category !== "UNCATEGORIZED");
             }
             else if (filter === "ICD10") {
                 matchesCategory = item.category === "ICD10";
             }
             else {
-                // Exact Match for Sub-categories (e.g. CPT-SURGERY)
                 matchesCategory = item.category === filter;
             }
 
@@ -591,7 +588,7 @@ Category: ICD10"></textarea>
         if(filtered.length === 0) {
             html += `<div style="padding:40px; text-align:center; color: var(--text-muted);">No questions found matching your filter.</div>`;
         } else {
-            html += `<table><tr><th>Category</th><th>Question</th><th>Answer</th><th>Action</th></tr>`;
+            html += `<table><tr><th>Category</th><th>Question / Rationale</th><th>Answer</th><th>Action</th></tr>`;
             filtered.forEach(data => {
                 let badgeClass = "cat-unk";
                 if(data.category === "ICD10") badgeClass = "cat-icd";
@@ -607,9 +604,15 @@ Category: ICD10"></textarea>
                         <td><span class="badge ${badgeClass}">${data.category || 'UNCATEGORIZED'}</span></td>
                         <td>
                             <div style="font-weight:600; color:white;">${data.question.substring(0, 80)}...</div>
-                            <div style="font-size:12px; color:var(--text-muted)">ID: ${data.id}</div>
+                            
+                            <div style="font-size:13px; color:#94a3b8; margin-top:6px; font-style:italic; border-left: 2px solid var(--cyan); padding-left:8px;">
+                                <i class='bx bx-info-circle'></i> 
+                                ${data.rationale ? data.rationale : '<span style="opacity:0.5">No Rationale</span>'}
+                            </div>
+
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">ID: ${data.id}</div>
                         </td>
-                        <td>${data.correct}</td>
+                        <td style="font-size: 16px; font-weight: bold; color: var(--cyan);">${data.correct}</td>
                         <td><button style="padding:5px 10px; font-size:12px; border-color:var(--red); color:var(--red); background:transparent;" onclick="window.delOne('${data.id}')">DELETE</button></td>
                     </tr>
                 `;
